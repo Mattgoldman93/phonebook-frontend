@@ -10,7 +10,6 @@ const App = () => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
-  const [newPerson, setNewPerson] = useState({});
 
   const hook = () => {
     console.log('hook');
@@ -19,14 +18,11 @@ const App = () => {
     });
   };
 
-  useEffect(hook, [newPerson]);
-  // is this ok?
-  //is it better to update persons from within 'addEntry'?
+  useEffect(hook, []);
 
   const addEntry = (event) => {
     event.preventDefault();
     const names = persons.map((p) => p.name);
-
     if (names.includes(newName)) {
       alert(`${newName} is already added to the phonebook.`);
     } else {
@@ -34,12 +30,21 @@ const App = () => {
         name: newName,
         number: newNumber,
       };
-      setNewPerson(newPerson);
-      personService.create(newPerson);
+      personService.create(newPerson).then((response) => {
+        console.log('create response:', response);
+        setPersons(persons.concat(response));
+      });
     }
     setNewName('');
     setNewNumber('');
     setFilter('');
+  };
+
+  const deleteEntry = (event, id) => {
+    personService.deleteOne(id).then((response) => {
+      console.log('deleteOne response:', response);
+      setPersons(persons.filter((p) => p.id !== id));
+    });
   };
 
   const handleNameChange = (event) => setNewName(event.target.value);
@@ -60,6 +65,8 @@ const App = () => {
     action: handleFilter,
   };
 
+  const data = { persons, filter, deleteEntry };
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -67,7 +74,7 @@ const App = () => {
       <h2>Add a New Number</h2>
       <PersonForm data={personFormData} />
       <h2>Numbers</h2>
-      <Persons filter={filter} persons={persons} />
+      <Persons data={data} />
     </div>
   );
 };
