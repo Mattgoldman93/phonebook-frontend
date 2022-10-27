@@ -5,7 +5,7 @@ const Person = ({ person, deleteEntry }) => (
     {person.name} {person.number}{' '}
     <button
       onClick={(event) => {
-        deleteEntry(event, person.id);
+        deleteEntry(event, person);
       }}>
       delete
     </button>
