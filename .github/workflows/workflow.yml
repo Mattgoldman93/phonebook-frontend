@@ -1,40 +1,27 @@
-name: Deployment pipeline
+name: Github Pages Deploy
 
-on:
+on: 
   push:
-    branches:
-      - main
-  pull_request:
-    branches: [main]
-    types: [opened, synchronize]
-permissions:
-  contents: write
+    branches: 
+      - "main"
 jobs:
-  simple_deployment_pipeline:
-    runs-on: ubuntu-20.04
+  build:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      fail-fast: true
+      matrix:
+        node-version: [16.x]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Install and build
+        run: npm install && npm run build
+      
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.4.1
         with:
-          node-version: '16'
-      - name: npm install 
-        run: npm install
-      # TODO add linting
-      # TODO add testing
-      - name: build
-        run: npm run build
-      - name: deploy    
-        if: ${{ github.event_name == 'push' }}
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: build # The folder the action should deploy.      
-  tag_release:
-    needs: [simple_deployment_pipeline]
-    runs-on: ubuntu-20.04 
-    steps:
-      - name: Bump version and push tag
-        if: ${{ github.event_name == 'push' }}
-        uses: anothrNick/github-tag-action@1.36.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DEFAULT_BUMP: patch
+          branch: gh-pages
+          folder: build
+
