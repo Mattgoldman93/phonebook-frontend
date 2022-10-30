@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const doRequest = (method, endpoint, body) => {
-  const url = `http://localhost:3001/persons/${endpoint}`;
+  const url = `http://localhost:3001/api/persons/${endpoint}`;
   const request = body ? method(url, body) : method(url);
   return request.then((response) => response.data);
 };

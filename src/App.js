@@ -31,6 +31,7 @@ const App = () => {
   };
 
   useEffect(hook, [message]);
+
   const addNew = () => {
     personService
       .create(newPerson())
@@ -41,7 +42,7 @@ const App = () => {
       .then(
         updateMessage({
           type: 'success',
-          text: `Successfully updated ${newName}`,
+          text: `Successfully added ${newName}`,
         }).catch((error) => {
           updateMessage({
             type: 'error',
@@ -87,6 +88,9 @@ const App = () => {
   };
 
   const updateMessage = (message) => {
+    setNewName('');
+    setNewNumber('');
+    setFilter('');
     setMessage(message);
     setTimeout(() => {
       setMessage(null);
@@ -101,9 +105,6 @@ const App = () => {
     } else {
       addNew();
     }
-    setNewName('');
-    setNewNumber('');
-    setFilter('');
   };
 
   const deleteEntry = (event, person) => {
