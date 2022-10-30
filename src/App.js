@@ -54,7 +54,7 @@ const App = () => {
 
   const shouldOverrideEntry = () => {
     return window.confirm(
-      `${newName} is already added to the phonebook. Replace the old number with a new one?`,
+      `${newName} has already been added to the phonebook. Replace the old number with a new one?`,
     );
   };
 
